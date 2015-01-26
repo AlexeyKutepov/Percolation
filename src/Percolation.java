@@ -3,12 +3,16 @@
  */
 public class Percolation {
 
+  /**
+   * create N-by-N grid, with all sites blocked
+   * @param N
+   */
   public Percolation(int N) {
 
   }
 
   /**
-   * Open site [i, j]
+   * open site (row i, column j) if it is not open already
    * @param i - row
    * @param j - column
    */
