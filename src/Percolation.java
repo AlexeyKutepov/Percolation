@@ -106,7 +106,7 @@ public class Percolation {
   public boolean percolates() {
     for (int i = 0; i < countTop; i++) {
       for (int j = 0; j < countBottom; j++) {
-        if (uf.connected(countTop, countBottom)) {
+        if (uf.connected(top[i], bottom[j])) {
           return true;
         }
       }
