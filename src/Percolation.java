@@ -18,11 +18,6 @@ public class Percolation {
     uf = new WeightedQuickUnionUF(N*N);
     this.N = N;
     gird = new boolean[N][N];
-    for (int i = 0; i < N; i++) {
-      for (int j = 0; j < N; j++) {
-        gird[i][j] = false;
-      }
-    }
   }
 
   /**
