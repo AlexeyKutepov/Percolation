@@ -22,7 +22,7 @@ public class PercolationStats {
         for (int i = 0; i < N * N; i++) {
           percolation.open(StdRandom.uniform(1, N + 1), StdRandom.uniform(1, N + 1));
           if (percolation.percolates()) {
-            thresholds[k] = i / (double) N*N;
+            thresholds[k] = i / (double) (N*N);
             break;
           }
         }

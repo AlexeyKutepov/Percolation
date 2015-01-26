@@ -104,7 +104,7 @@ public class Percolation {
         if (!gird[N-1][j]) {
           continue;
         }
-        if (uf.connected(position(0, i), position(N, j))) {
+        if (uf.connected(position(0, i), position(N-1, j))) {
           return true;
         }
       }
