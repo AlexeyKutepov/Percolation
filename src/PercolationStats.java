@@ -2,13 +2,32 @@
  * Created by Alexey Kutepov on 26.01.15.
  */
 public class PercolationStats {
+
+  private double[] thresholds;
+  private int T;
+
   /**
    * perform T independent experiments on an N-by-N grid
    * @param N
    * @param T
    */
   public PercolationStats(int N, int T) {
-
+    if (N <= 0 || T <= 0) {
+      throw new IllegalArgumentException();
+    } else {
+      thresholds = new double[T];
+      this.T = T;
+      for (int k = 0; k < T; k++) {
+        Percolation percolation = new Percolation(N);
+        for (int i = 0; i < N * N; i++) {
+          percolation.open(StdRandom.uniform(1, N + 1), StdRandom.uniform(1, N + 1));
+          if (percolation.percolates()) {
+            thresholds[k] = i / (double) N*N;
+            break;
+          }
+        }
+      }
+    }
   }
 
   /**
@@ -16,7 +35,7 @@ public class PercolationStats {
    * @return
    */
   public double mean() {
-    return 0;
+    return StdStats.mean(thresholds);
   }
 
   /**
@@ -24,7 +43,8 @@ public class PercolationStats {
    * @return
    */
   public double stddev() {
-    return 0;
+    if (T == 1) return Double.NaN;
+    return StdStats.stddev(thresholds);
   }
 
   /**
@@ -32,7 +52,7 @@ public class PercolationStats {
    * @return
    */
   public double confidenceLo() {
-    return 0;
+    return mean() - 1.96*stddev()/Math.sqrt(T);
   }
 
   /**
@@ -40,7 +60,7 @@ public class PercolationStats {
    * @return
    */
   public double confidenceHi() {
-    return 0;
+    return mean() + 1.96*stddev()/Math.sqrt(T);
   }
 
   public static void main(String[] args) {
