@@ -5,6 +5,7 @@ public class Percolation {
 
   private WeightedQuickUnionUF uf;
   private boolean[][] gird;
+  private boolean[][] girdFill;
   private final int N;
   private int[] top;
   private int countTop;
@@ -22,6 +23,7 @@ public class Percolation {
     uf = new WeightedQuickUnionUF(N*N);
     this.N = N;
     gird = new boolean[N][N];
+    girdFill = new boolean[N][N];
 
     top = new int[N];
     bottom = new int[N];
@@ -44,6 +46,7 @@ public class Percolation {
     if (I == 0) {
       top[countTop] = position(I, J);
       countTop++;
+      filling(I,J);
     } else if (I == N - 1) {
       bottom[countBottom] = position(I, J);
       countBottom++;
@@ -59,6 +62,22 @@ public class Percolation {
     }
     if (J < N-1 && gird[I][J + 1]) {
       uf.union(position(I, J), position(I, J + 1));
+    }
+  }
+
+  private void filling(int i, int j) {
+    girdFill[i][j] = true;
+    if (i > 0 && gird[i - 1][j] && !girdFill[i - 1][j]) {
+      filling(i - 1, j);
+    }
+    if (i < N-1 && gird[i + 1][j] && !girdFill[i + 1][j]) {
+      filling(i + 1, j);
+    }
+    if (j > 0 && gird[i][j - 1] && !girdFill[i][j - 1]) {
+      filling(i, j - 1);
+    }
+    if (j < N-1 && gird[i][j + 1] && !girdFill[i][j + 1]) {
+      filling(i, j + 1);
     }
   }
 
@@ -87,16 +106,17 @@ public class Percolation {
     }
     int I = i - 1;
     int J = j - 1;
-    if (!gird[I][J]) {
-      return false;
-    } else {
-      for (int k = 0; k < countTop; k++) {
-        if (uf.connected(position(I, J), top[k])) {
-          return true;
-        }
-      }
-      return false;
-    }
+//    if (!gird[I][J]) {
+//      return false;
+//    } else {
+//      for (int k = 0; k < countTop; k++) {
+//        if (uf.connected(position(I, J), top[k])) {
+//          return true;
+//        }
+//      }
+//      return false;
+//    }
+    return girdFill[I][J];
   }
 
   /**
@@ -104,11 +124,17 @@ public class Percolation {
    * @return true - system is percolated, else - false
    */
   public boolean percolates() {
-    for (int i = 0; i < countTop; i++) {
-      for (int j = 0; j < countBottom; j++) {
-        if (uf.connected(top[i], bottom[j])) {
-          return true;
-        }
+//    for (int i = 0; i < countTop; i++) {
+//      for (int j = 0; j < countBottom; j++) {
+//        if (uf.connected(top[i], bottom[j])) {
+//          return true;
+//        }
+//      }
+//    }
+//    return false;
+    for (int i = 1; i < N; i++) {
+      if (isFull(N, i)) {
+        return true;
       }
     }
     return false;
