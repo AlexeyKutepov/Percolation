@@ -4,7 +4,7 @@
 public class Percolation {
 
   private WeightedQuickUnionUF uf;
-  private boolean[][] id;
+  private boolean[][] gird;
   private final int N;
 
   /**
@@ -17,10 +17,10 @@ public class Percolation {
     }
     uf = new WeightedQuickUnionUF(N*N);
     this.N = N;
-    id = new boolean[N][N];
+    gird = new boolean[N][N];
     for (int i = 0; i < N; i++) {
       for (int j = 0; j < N; j++) {
-        id[i][j] = false;
+        gird[i][j] = false;
       }
     }
   }
@@ -36,17 +36,17 @@ public class Percolation {
     }
     int I = i - 1;
     int J = j - 1;
-    id[I][J] = true;
-    if (I > 0 && id[I - 1][J]) {
+    gird[I][J] = true;
+    if (I > 0 && gird[I - 1][J]) {
       uf.union(position(I, J), position(I - 1, J));
     }
-    if (I < N-1 && id[I + 1][J]) {
+    if (I < N-1 && gird[I + 1][J]) {
       uf.union(position(I, J), position(I + 1, J));
     }
-    if (J > 0 && id[I][J - 1]) {
+    if (J > 0 && gird[I][J - 1]) {
       uf.union(position(I, J), position(I, J - 1));
     }
-    if (J < N-1 && id[I][J + 1]) {
+    if (J < N-1 && gird[I][J + 1]) {
       uf.union(position(I, J), position(I, J + 1));
     }
   }
@@ -61,7 +61,7 @@ public class Percolation {
     if (i < 1 || i > N || j < 1 || j > N) {
       throw new IndexOutOfBoundsException();
     }
-    return id[i-1][j-1];
+    return gird[i-1][j-1];
   }
 
   /**
@@ -74,8 +74,21 @@ public class Percolation {
     if (i < 1 || i > N || j < 1 || j > N) {
       throw new IndexOutOfBoundsException();
     }
-
-    return false;
+    int I = i - 1;
+    int J = j - 1;
+    if (!gird[I][J]) {
+      return false;
+    } else {
+      for (int k = 0; k < N; k++) {
+        if (!gird[0][k]) {
+          continue;
+        }
+        if (uf.connected(position(I, J), position(0, k))) {
+          return true;
+        }
+      }
+      return false;
+    }
   }
 
   /**
@@ -83,6 +96,19 @@ public class Percolation {
    * @return true - system is percolated, else - false
    */
   public boolean percolates() {
+    for (int i = 0; i < N; i++) {
+      if (!gird[0][i]) {
+        continue;
+      }
+      for (int j = 0; j < N; j++) {
+        if (!gird[N-1][j]) {
+          continue;
+        }
+        if (uf.connected(position(0, i), position(N, j))) {
+          return true;
+        }
+      }
+    }
     return false;
   }
 
