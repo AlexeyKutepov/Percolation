@@ -19,11 +19,17 @@ public class PercolationStats {
       this.T = T;
       for (int k = 0; k < T; k++) {
         Percolation percolation = new Percolation(N);
-        for (int i = 0; i < N * N; i++) {
-          percolation.open(StdRandom.uniform(1, N + 1), StdRandom.uniform(1, N + 1));
-          if (percolation.percolates()) {
-            thresholds[k] = i / (double) (N*N);
-            break;
+        int i = 0;
+        while (i < N * N) {
+          int p = StdRandom.uniform(1, N + 1);
+          int q = StdRandom.uniform(1, N + 1);
+          if (!percolation.isOpen(p, q)) {
+            i++;
+            percolation.open(p, q);
+            if (percolation.percolates()) {
+              thresholds[k] = i / (double) (N * N);
+              break;
+            }
           }
         }
       }
