@@ -3,12 +3,26 @@
  */
 public class Percolation {
 
+  private WeightedQuickUnionUF uf;
+  private boolean[][] id;
+  private final int N;
+
   /**
    * create N-by-N grid, with all sites blocked
    * @param N
    */
   public Percolation(int N) {
-
+    if (N <= 0) {
+      throw new IllegalArgumentException();
+    }
+    uf = new WeightedQuickUnionUF(N*N);
+    this.N = N;
+    id = new boolean[N][N];
+    for (int i = 0; i < N; i++) {
+      for (int j = 0; j < N; j++) {
+        id[i][j] = false;
+      }
+    }
   }
 
   /**
@@ -17,7 +31,24 @@ public class Percolation {
    * @param j - column
    */
   public void open(int i, int j) {
-
+    if (i < 1 || i > N || j < 1 || j > N) {
+      throw new IndexOutOfBoundsException();
+    }
+    int I = i - 1;
+    int J = j - 1;
+    id[I][J] = true;
+    if (I > 0 && id[I - 1][J]) {
+      uf.union(position(I, J), position(I - 1, J));
+    }
+    if (I < N-1 && id[I + 1][J]) {
+      uf.union(position(I, J), position(I + 1, J));
+    }
+    if (J > 0 && id[I][J - 1]) {
+      uf.union(position(I, J), position(I, J - 1));
+    }
+    if (J < N-1 && id[I][J + 1]) {
+      uf.union(position(I, J), position(I, J + 1));
+    }
   }
 
   /**
@@ -27,7 +58,10 @@ public class Percolation {
    * @return true - site is open, else - false
    */
   public boolean isOpen(int i, int j)  {
-    return false;
+    if (i < 1 || i > N || j < 1 || j > N) {
+      throw new IndexOutOfBoundsException();
+    }
+    return id[i-1][j-1];
   }
 
   /**
@@ -37,6 +71,10 @@ public class Percolation {
    * @return true - site is full, else - false
    */
   public boolean isFull(int i, int j) {
+    if (i < 1 || i > N || j < 1 || j > N) {
+      throw new IndexOutOfBoundsException();
+    }
+
     return false;
   }
 
@@ -48,7 +86,12 @@ public class Percolation {
     return false;
   }
 
+  private int position(int i, int j) {
+    return N*i + j;
+  }
+
   public static void main(String[] args) {
     // write your code here
   }
+
 }
