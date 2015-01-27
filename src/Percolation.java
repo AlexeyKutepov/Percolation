@@ -5,6 +5,7 @@ public class Percolation {
 
   private WeightedQuickUnionUF uf;
   private boolean[][] gird;
+  private boolean[][] girdFill;
   private final int N;
 
   /**
@@ -18,6 +19,7 @@ public class Percolation {
     uf = new WeightedQuickUnionUF(N*N);
     this.N = N;
     gird = new boolean[N][N];
+    girdFill = new boolean[N][N];
   }
 
   /**
@@ -32,16 +34,31 @@ public class Percolation {
     int I = i - 1;
     int J = j - 1;
     gird[I][J] = true;
+    if (I == 0) {
+      filling(I, J);
+    }
     if (I > 0 && gird[I - 1][J]) {
+      if (girdFill[I - 1][J]) {
+        filling(I, J);
+      }
       uf.union(position(I, J), position(I - 1, J));
     }
     if (I < N-1 && gird[I + 1][J]) {
+      if (girdFill[I + 1][J]) {
+        filling(I, J);
+      }
       uf.union(position(I, J), position(I + 1, J));
     }
     if (J > 0 && gird[I][J - 1]) {
+      if (girdFill[I][J - 1]) {
+        filling(I, J);
+      }
       uf.union(position(I, J), position(I, J - 1));
     }
     if (J < N-1 && gird[I][J + 1]) {
+      if (girdFill[I][J + 1]) {
+        filling(I, J);
+      }
       uf.union(position(I, J), position(I, J + 1));
     }
   }
@@ -71,19 +88,7 @@ public class Percolation {
     }
     int I = i - 1;
     int J = j - 1;
-    if (!gird[I][J]) {
-      return false;
-    } else {
-      for (int k = 0; k < N; k++) {
-        if (!gird[0][k]) {
-          continue;
-        }
-        if (uf.connected(position(I, J), position(0, k))) {
-          return true;
-        }
-      }
-      return false;
-    }
+    return girdFill[I][J];
   }
 
   /**
@@ -92,16 +97,8 @@ public class Percolation {
    */
   public boolean percolates() {
     for (int i = 0; i < N; i++) {
-      if (!gird[0][i]) {
-        continue;
-      }
-      for (int j = 0; j < N; j++) {
-        if (!gird[N-1][j]) {
-          continue;
-        }
-        if (uf.connected(position(0, i), position(N-1, j))) {
-          return true;
-        }
+      if (girdFill[N - 1][i]) {
+        return true;
       }
     }
     return false;
@@ -110,6 +107,24 @@ public class Percolation {
   private int position(int i, int j) {
     return N*i + j;
   }
+
+  private void filling(int i, int j) {
+    girdFill[i][j] = true;
+    if (i > 0 && gird[i - 1][j] && !girdFill[i - 1][j]) {
+      filling(i - 1, j);
+    }
+    if (i < N-1 && gird[i + 1][j] && !girdFill[i + 1][j]) {
+      filling(i + 1, j);
+    }
+    if (j > 0 && gird[i][j - 1] && !girdFill[i][j - 1]) {
+      filling(i, j - 1);
+    }
+    if (j < N-1 && gird[i][j + 1] && !girdFill[i][j + 1]) {
+      filling(i, j + 1);
+    }
+  }
+
+
 
   public static void main(String[] args) {
     // write your code here
