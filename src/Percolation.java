@@ -6,10 +6,6 @@ public class Percolation {
   private WeightedQuickUnionUF uf;
   private boolean[][] gird;
   private final int N;
-  private int[] top;
-  private int countTop;
-  private int[] bottom;
-  private int countBottom;
 
   /**
    * create N-by-N grid, with all sites blocked
@@ -22,11 +18,6 @@ public class Percolation {
     uf = new WeightedQuickUnionUF(N*N);
     this.N = N;
     gird = new boolean[N][N];
-
-    top = new int[N];
-    bottom = new int[N];
-    countTop = 0;
-    countBottom = 0;
   }
 
   /**
@@ -41,13 +32,6 @@ public class Percolation {
     int I = i - 1;
     int J = j - 1;
     gird[I][J] = true;
-    if (I == 0) {
-      top[countTop] = position(I, J);
-      countTop++;
-    } else if (I == N - 1) {
-      bottom[countBottom] = position(I, J);
-      countBottom++;
-    }
     if (I > 0 && gird[I - 1][J]) {
       uf.union(position(I, J), position(I - 1, J));
     }
@@ -90,8 +74,11 @@ public class Percolation {
     if (!gird[I][J]) {
       return false;
     } else {
-      for (int k = 0; k < countTop; k++) {
-        if (uf.connected(position(I, J), top[k])) {
+      for (int k = 0; k < N; k++) {
+        if (!gird[0][k]) {
+          continue;
+        }
+        if (uf.connected(position(I, J), position(0, k))) {
           return true;
         }
       }
@@ -104,9 +91,15 @@ public class Percolation {
    * @return true - system is percolated, else - false
    */
   public boolean percolates() {
-    for (int i = 0; i < countTop; i++) {
-      for (int j = 0; j < countBottom; j++) {
-        if (uf.connected(countTop, countBottom)) {
+    for (int i = 0; i < N; i++) {
+      if (!gird[0][i]) {
+        continue;
+      }
+      for (int j = 0; j < N; j++) {
+        if (!gird[N-1][j]) {
+          continue;
+        }
+        if (uf.connected(position(0, i), position(N-1, j))) {
           return true;
         }
       }
