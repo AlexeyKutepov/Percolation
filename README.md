@@ -374,5 +374,3 @@ single call to open(), isFull(), and percolates().
 => passed     1024        4               0               0               0         
 ==> 4/4 tests passed
 
-Total: 4/9 tests passed!
-================================================================
