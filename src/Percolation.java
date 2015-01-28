@@ -7,6 +7,7 @@ public class Percolation {
   private boolean[][] gird;
   private boolean[][] girdFill;
   private final int N;
+  private boolean percolated;
 
   /**
    * create N-by-N grid, with all sites blocked
@@ -20,6 +21,7 @@ public class Percolation {
     this.N = N;
     gird = new boolean[N][N];
     girdFill = new boolean[N][N];
+    percolated = false;
   }
 
   /**
@@ -96,12 +98,12 @@ public class Percolation {
    * @return true - system is percolated, else - false
    */
   public boolean percolates() {
-    for (int i = 0; i < N; i++) {
-      if (girdFill[N - 1][i]) {
-        return true;
-      }
-    }
-    return false;
+//    for (int i = 0; i < N; i++) {
+//      if (girdFill[N - 1][i]) {
+//        return true;
+//      }
+//    }
+    return percolated;
   }
 
   private int position(int i, int j) {
@@ -110,6 +112,9 @@ public class Percolation {
 
   private void filling(int i, int j) {
     girdFill[i][j] = true;
+    if (i == N - 1) {
+      percolated = true;
+    }
     if (i > 0 && gird[i - 1][j] && !girdFill[i - 1][j]) {
       filling(i - 1, j);
     }
